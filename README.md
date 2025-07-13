@@ -346,6 +346,34 @@ print(out_logits.shape)
 
 Usage for Hyperspectral images is similar to other images.
 
+### Loading data from other sensors
+
+To simplify experiments with your own datasets stored in separate folders,
+additional dataset helpers are available in
+`pretraining/datasets/additional_datasets.py`.
+These classes load GeoTIFF or LAZ files and apply the same preprocessing used
+in the demo.
+
+```python
+from pretraining.datasets import (
+    DOP20Dataset,
+    OAMTCDDataset,
+    WV3Dataset,
+    Sentinel1SLCDataset,
+    LazPointCloudDataset,
+)
+
+dop = DOP20Dataset("/path/to/DOP20")
+wv3 = WV3Dataset("/path/to/WV3")
+lidar = LazPointCloudDataset("/path/to/lidar")
+img = dop[0].unsqueeze(0).cuda()
+wavelengths = [0.49, 0.56, 0.665, 0.83]
+out_feat = vit_model.forward_features(img, wave_list=wavelengths)
+```
+
+These loaders support the DOP20 RGBi orthophotos, OAM-TCD RGB tiles, Sentinel-1
+SLC TIFFs from LiveEO, LAZ point clouds, and WorldView-3 8-band imagery.
+
 
 
 ---
